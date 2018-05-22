@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+"""main.py: MicroPython Program that connects to airnow.gov, retrieves data and displays it on an OLED attached to an ESP8266.  Note need to change the CHANGE_MEs in init_values to valid values"""
+
+__author__ = "Aaron Grothe"
+__copyright__ = "Copyright 2018, Planet Earth"
+__licnese__ = "GPL 3.0 or later"
+
 import network
 import time
 import urequests
