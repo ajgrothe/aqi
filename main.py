@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-
-"""main.py: MicroPython Program that connects to airnow.gov, retrieves data and displays it on an OLED attached to an ESP8266.  Note need to change the CHANGE_MEs in init_values to valid values"""
-
-__author__ = "Aaron Grothe"
-__copyright__ = "Copyright 2018, Planet Earth"
-__licnese__ = "GPL 3.0 or later"
- 
-
 import network
 import time
 import urequests
@@ -50,7 +41,7 @@ def display (option, parsed, oled):
   oled.fill (0)
   if (option == 0): # display place
       text = "Area:   " + parsed[0]['ReportingArea']
-      oled.text (text, 0, 15)
+      oled.text (text, 0, 10)
       hour = parsed[0]['HourObserved']
       if (hour > 12):
          text = "Sample: " + str(hour-12) + ":00 PM " + str(parsed[0]['LocalTimeZone'])
@@ -58,15 +49,15 @@ def display (option, parsed, oled):
          text = "Sample: 12:00 AM " + str(parsed[0]['LocalTimeZone'])
       else:
          text = "Sample: " + str(hour) + ":00 PM " + str(parsed[0]['LocalTimeZone'])
-      oled.text (text, 0, 25)
+      oled.text (text, 0, 20)
   if (option == 1):
     for i in range (0, 3):
-      text = ljust(parsed[i]['ParameterName'], 8)  + ' - ' + str(parsed[i]['AQI'])
+      text = ljust(parsed[i]['ParameterName'], 5)  + ' - ' + str(parsed[i]['AQI'])
       oled.text (text, 0, (10 * i))
   if (option == 2): # display good/bad/etc
     for i in range (0, 3):
-      text = ljust(parsed[i]['ParameterName'], 8)  + ' - ' + str(parsed[i]['AQI'])
-      oled.text (text, 0, (10 * option))
+      text = ljust(parsed[i]['ParameterName'], 5)  + ' - ' + str(parsed[i]['Category']['Name'])
+      oled.text (text, 0, (10 * i))
   oled.show()
 
 def once ():
@@ -76,11 +67,14 @@ def once ():
   display (1, parsed, oled)
 
 def loop():
+  init_values()
+  init_network()
+  oled = init_display()
   while (1):
     parsed = get_data()
     for i in range (600):
-      for j in range (3):      
-        display (j, parsed)
+      for j in range (0, 3):      
+        display (j, parsed, oled)
         time.sleep(2)
 
 if __name__ == "__main__":
